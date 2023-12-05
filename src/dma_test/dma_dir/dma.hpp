@@ -36,7 +36,10 @@ class DMA
 {
 public:
 	// Constructor
-	DMA(/*Xipname %ip*/);
+	DMA(/*xnnipname %ip*/);
+	~DMA() {
+		XNn_inference_Release(&neuralNetwork);
+	}
 
 	/**
 	 * @brief Send data to generated IP with DMA.
@@ -89,6 +92,8 @@ private:
 
 	// Shared memory used by the DMA
 	Reserved_Mem pmem;
+
+	XNn_inference neuralNetwork;
 };
 
 template<typename T>
@@ -120,10 +125,10 @@ uint32_t DMA::sendData(T *buff, const long inputLength)
 	dma.S2MMSetDestinationAddress(P_START + P_OFFSET);
 
 	// Here we will wate for the ip to be ready
-	// while(!Xipname_IsReady(&ip)) {}
+	while(!XNn_inference_IsReady(&neuralNetwork)) {}
 
 	// Start the ip
-	// Xipname_Start(&ip);
+	XNn_inference_Start(&neuralNetwork);
 
 	dma.MM2SStart();
 	dma.S2MMStart();
@@ -140,7 +145,7 @@ uint32_t DMA::getData(T *buff, const long outputLength)
 
 	while (!dma.MM2SIsSynced()) {}
 	while(!dma.S2MMIsSynced()) {}
-	// while(!Xipname_IsDone(&ip)) {}
+	while(!Xipname_IsDone(&neuralNetwork)) {}
 
 	return pmem.gather(buff, P_OFFSET, outputLength);
 }
