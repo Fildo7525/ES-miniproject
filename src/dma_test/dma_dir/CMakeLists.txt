@@ -1,7 +1,4 @@
-cmake_minimum_required(VERSION 3.3.2)
-project(dma)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+add_subdirectory(drivers)
 
 set(FILES
 	dma.cpp
@@ -10,10 +7,18 @@ set(FILES
 
 add_library(dma ${FILES})
 
+
 target_include_directories(
 	dma
 PUBLIC
 	../lib/
+	dma_dir
 	${CMAKE_SOURCE_DIR}
+)
+
+target_link_libraries(
+	dma
+PUBLIC
+	drivers
 )
 
