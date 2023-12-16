@@ -11,4 +11,10 @@ set(HEADERS
 
 add_library(drivers ${SRC} ${HEADERS})
 
+target_include_directories(
+	drivers
+PULIC
+	${CMAKE_SOURCE_DIR}
+)
+
 
